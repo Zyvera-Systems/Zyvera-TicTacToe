@@ -45,14 +45,10 @@
 
 ### GUI-System
 - **Hauptmenü:** Übersichtliches Menü mit Queue, Stats und Top-Spieler
-- **Spiel-GUI:** Kompaktes 3x3 Board (36 Slots) mit echten Spielerköpfen
+- **Spiel-GUI:** Kompaktes 3x3 Board
 - **End-Screen:** Gewinn-Linie wird grün hervorgehoben
 - **Stats-GUI:** Siege, Niederlagen, Unentschieden, Winrate, Züge, Serien
 - **Top-Spieler GUI:** Rangliste der besten 10 Spieler
-
-### Spielerköpfe
-- Echte Minecraft-Skins über `SkullMeta.setOwningPlayer()` (1.12.1+)
-- Legacy-Fallback über `SkullMeta.setOwner()` für ältere Versionen
 
 ### Timeout-System
 - **Kein Zug nach 120s:** Spiel wird abgebrochen (keine Stats)
@@ -63,8 +59,6 @@
 - Gebundene Werkbänke zeigen ein schwebendes Hologramm:
   - Zeile 1: `§6§lTicTacToe`
   - Zeile 2: `§8[§aKlick Mich§8]`
-- Unsichtbare ArmorStands, persistent über Server-Neustarts
-- Höhe und Text konfigurierbar in der config.yml
 
 ### Werkbank-Bindung
 - `/ttt bind` → Klick auf Werkbank = TicTacToe-Station
