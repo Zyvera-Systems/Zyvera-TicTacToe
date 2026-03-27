@@ -1,0 +1,63 @@
+# ============================================
+# Zyvera-TicTacToe Configuration v1.0
+# Author: Thomas U. & Zyvera-Systems
+# ============================================
+
+prefix: "&8[&6&lTTT&8] "
+
+messages:
+  no-permission: "&cDu hast keine Berechtigung!"
+  player-only: "&cDieser Befehl ist nur für Spieler!"
+  queue-joined: "&aDu bist der Warteschlange beigetreten!"
+  queue-left: "&eDu hast die Warteschlange verlassen."
+  queue-already: "&eDu bist bereits in der Warteschlange!"
+  game-found: "&aEin Gegner wurde gefunden! Das Spiel beginnt..."
+  game-cancelled: "&eDas Spiel wurde wegen Inaktivität abgebrochen."
+  challenge-sent: "&aDu hast &e%player% &aherausgefordert!"
+  challenge-received: "&e%player% &ahat dich zu TicTacToe herausgefordert! &7/ttt accept"
+  challenge-accepted: "&aHerausforderung angenommen! Das Spiel beginnt..."
+  challenge-denied: "&eHerausforderung abgelehnt."
+  challenge-expired: "&eDie Herausforderung ist abgelaufen."
+  challenge-self: "&cDu kannst dich nicht selbst herausfordern!"
+  player-not-found: "&cSpieler nicht gefunden!"
+  player-ingame: "&cDieser Spieler ist bereits in einem Spiel!"
+  already-ingame: "&cDu bist bereits in einem Spiel!"
+  your-turn: "&aRunde: &e%round% &8| &aDu bist dran! &7(%symbol%)"
+  opponent-turn: "&eRunde: &e%round% &8| &e%player% &eist dran..."
+  game-win: "&a&lGlückwunsch! &aDu hast gegen &e%player% &agewonnen!"
+  game-lose: "&cDu hast gegen &e%player% &cverloren."
+  game-draw: "&eUnentschieden gegen &e%player%&e!"
+  game-quit: "&eDu hast das Spiel verlassen."
+  opponent-quit: "&eDein Gegner hat das Spiel verlassen. Du gewinnst!"
+  timeout-win: "&aDein Gegner war zu langsam! Du gewinnst!"
+  timeout-lose: "&cDu warst zu langsam! Du hast verloren."
+  bind-success: "&aWerkbank erfolgreich als TicTacToe-Station gebunden!"
+  bind-removed: "&eWerkbank-Bindung entfernt."
+  bind-mode: "&aKlicke auf eine Werkbank, um sie zu binden."
+  unbind-mode: "&aKlicke auf eine gebundene Werkbank, um die Bindung zu entfernen."
+  not-a-workbench: "&cDas ist keine Werkbank!"
+  stats-reset: "&aStats wurden zurückgesetzt."
+
+game:
+  turn-timeout: 120
+  challenge-timeout: 60
+  queue-check-interval: 40
+  workbench-cooldown: 1000
+
+gui:
+  symbol-x-name: "&c&lX"
+  symbol-x-material: RED_CONCRETE
+  symbol-o-name: "&9&lO"
+  symbol-o-material: BLUE_CONCRETE
+  empty-name: "&7Klicke hier!"
+  empty-material: LIGHT_GRAY_STAINED_GLASS_PANE
+  border-material: BLACK_STAINED_GLASS_PANE
+  border-name: " "
+
+hologram:
+  line1: "&6&lTicTacToe"
+  line2: "&8[&aKlick Mich&8]"
+  offset-y: 1.5
+
+storage:
+  type: yaml

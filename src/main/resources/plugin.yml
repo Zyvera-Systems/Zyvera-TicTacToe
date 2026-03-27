@@ -1,0 +1,32 @@
+name: Zyvera-TicTacToe
+version: ${project.version}
+main: de.zyvera.tictactoe.ZyveraTicTacToe
+api-version: "1.13"
+folia-supported: true
+authors:
+  - "Thomas U."
+  - "Zyvera-Systems"
+description: TicTacToe Minigame Plugin - Challenge players, queue up, and track your stats!
+website: https://zyvera.de
+
+commands:
+  ttt:
+    description: TicTacToe Hauptbefehl
+    usage: /ttt [play|challenge|stats|bind|unbind|help]
+    permission: zyvera.ttt.use
+    aliases:
+      - tictactoe
+
+permissions:
+  zyvera.ttt.use:
+    description: Erlaubt die Nutzung von /ttt
+    default: true
+  zyvera.ttt.bind:
+    description: Erlaubt das Binden von TicTacToe an Werkbänke
+    default: op
+  zyvera.ttt.stats.others:
+    description: Erlaubt das Ansehen von Stats anderer Spieler
+    default: true
+  zyvera.ttt.admin:
+    description: Admin-Rechte für TicTacToe
+    default: op
