@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+/**
+ * Verwaltet Spieler-Statistiken mit YAML-Persistenz.
+ */
 public class StatsManager {
 
     private final Plugin plugin;
@@ -24,6 +26,9 @@ public class StatsManager {
         loadStats();
     }
 
+    /**
+     * Lädt alle Stats aus der YAML-Datei.
+     */
     public void loadStats() {
         if (!statsFile.exists()) {
             try {
@@ -59,6 +64,9 @@ public class StatsManager {
         }
     }
 
+    /**
+     * Speichert alle Stats in die YAML-Datei.
+     */
     public void saveStats() {
         for (Map.Entry<UUID, PlayerStats> entry : cache.entrySet()) {
             String path = "players." + entry.getKey().toString();
@@ -82,17 +90,30 @@ public class StatsManager {
         }
     }
 
-
+    /**
+     * Speichert asynchron.
+     */
     public void saveAsync() {
         SchedulerUtil.runAsync(plugin, this::saveStats);
     }
+
+    /**
+     * Holt oder erstellt Stats für einen Spieler.
+     */
     public PlayerStats getStats(UUID uuid, String name) {
         return cache.computeIfAbsent(uuid, k -> new PlayerStats(uuid, name));
     }
 
+    /**
+     * Holt Stats falls vorhanden.
+     */
     public PlayerStats getStats(UUID uuid) {
         return cache.get(uuid);
     }
+
+    /**
+     * Setzt die Stats eines Spielers zurück.
+     */
     public void resetStats(UUID uuid) {
         PlayerStats stats = cache.get(uuid);
         if (stats != null) {
@@ -102,6 +123,9 @@ public class StatsManager {
         }
     }
 
+    /**
+     * Gibt die Top-Spieler nach Wins sortiert zurück.
+     */
     public List<PlayerStats> getTopPlayers(int limit) {
         List<PlayerStats> all = new ArrayList<>(cache.values());
         all.sort((a, b) -> {
@@ -112,6 +136,9 @@ public class StatsManager {
         return all.subList(0, Math.min(limit, all.size()));
     }
 
+    /**
+     * Gibt alle gecachten Stats zurück.
+     */
     public Collection<PlayerStats> getAllStats() {
         return cache.values();
     }
