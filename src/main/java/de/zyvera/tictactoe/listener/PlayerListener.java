@@ -6,6 +6,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+/**
+ * Listener für Spieler-Events (Join/Quit).
+ */
 public class PlayerListener implements Listener {
 
     private final ZyveraTicTacToe plugin;

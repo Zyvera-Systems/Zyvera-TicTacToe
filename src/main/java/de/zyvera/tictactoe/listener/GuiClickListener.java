@@ -147,6 +147,12 @@ public class GuiClickListener implements Listener {
         String title = event.getView().getTitle();
 
         if (title.equals(GameGui.GAME_TITLE)) {
+            // Wenn das GUI programmatisch aktualisiert wurde → nicht erneut öffnen
+            if (GameGui.consumeSuppress(player.getUniqueId())) {
+                return;
+            }
+
+            // Spieler hat ESC gedrückt → GUI wieder öffnen
             TicTacToeGame game = plugin.getGameManager().getGame(player.getUniqueId());
             if (game != null && game.getResult() == TicTacToeGame.GameResult.IN_PROGRESS) {
                 de.zyvera.tictactoe.util.SchedulerUtil.runLater(plugin, () -> {
@@ -155,6 +161,12 @@ public class GuiClickListener implements Listener {
                     }
                 }, 1L);
             }
+        }
+
+        // End-Screen: suppress wenn programmatisch geöffnet
+        if (title.equals(GameGui.END_TITLE_WIN) || title.equals(GameGui.END_TITLE_LOSE)
+                || title.equals(GameGui.END_TITLE_DRAW) || title.equals(GameGui.END_TITLE_CANCEL)) {
+            GameGui.consumeSuppress(player.getUniqueId());
         }
     }
 }

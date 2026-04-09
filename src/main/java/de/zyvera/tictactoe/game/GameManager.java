@@ -34,6 +34,7 @@ public class GameManager {
             }
         }, queueInterval, queueInterval);
 
+        // Timeout-Check alle 20 Ticks (1 Sekunde)
         timeoutTask = SchedulerUtil.runTimer(plugin, () -> {
             long challengeTimeout = plugin.getConfig().getInt("game.challenge-timeout", 60) * 1000L;
             List<UUID> expired = queueManager.cleanupExpiredChallenges(challengeTimeout);
@@ -47,6 +48,7 @@ public class GameManager {
             long turnTimeout = plugin.getConfig().getInt("game.turn-timeout", 120) * 1000L;
             long now = System.currentTimeMillis();
 
+            // Kopie um ConcurrentModification zu vermeiden
             Set<UUID> processed = new HashSet<>();
             for (Map.Entry<UUID, TicTacToeGame> entry : activeGames.entrySet()) {
                 TicTacToeGame game = entry.getValue();
@@ -105,10 +107,8 @@ public class GameManager {
         MessageUtil.sendMessage(playerX, "game-found");
         MessageUtil.sendMessage(playerO, "game-found");
 
-        SchedulerUtil.runSync(plugin, () -> {
-            GameGui.openGame(plugin, playerX, game);
-            GameGui.openGame(plugin, playerO, game);
-        });
+        GameGui.openGame(plugin, playerX, game);
+        GameGui.openGame(plugin, playerO, game);
     }
 
     public void handleMove(UUID playerUuid, int position) {
@@ -124,7 +124,9 @@ public class GameManager {
         }
     }
 
-
+    /**
+     * Abgebrochenes Spiel (keine Stats, keine Gewinner).
+     */
     private void handleCancelledGame(TicTacToeGame game) {
         game.cancel();
 
@@ -134,14 +136,12 @@ public class GameManager {
         if (playerX != null) MessageUtil.sendMessage(playerX, "game-cancelled");
         if (playerO != null) MessageUtil.sendMessage(playerO, "game-cancelled");
 
-        SchedulerUtil.runSync(plugin, () -> {
-            if (playerX != null && playerX.isOnline()) {
-                GameGui.openGameEnd(plugin, playerX, game);
-            }
-            if (playerO != null && playerO.isOnline()) {
-                GameGui.openGameEnd(plugin, playerO, game);
-            }
-        });
+        if (playerX != null && playerX.isOnline()) {
+            GameGui.openGameEnd(plugin, playerX, game);
+        }
+        if (playerO != null && playerO.isOnline()) {
+            GameGui.openGameEnd(plugin, playerO, game);
+        }
 
         SchedulerUtil.runLater(plugin, () -> {
             activeGames.remove(game.getPlayerX());
@@ -184,14 +184,12 @@ public class GameManager {
 
         sendGameEndMessages(game, playerX, playerO);
 
-        SchedulerUtil.runSync(plugin, () -> {
-            if (playerX != null && playerX.isOnline()) {
-                GameGui.openGameEnd(plugin, playerX, game);
-            }
-            if (playerO != null && playerO.isOnline()) {
-                GameGui.openGameEnd(plugin, playerO, game);
-            }
-        });
+        if (playerX != null && playerX.isOnline()) {
+            GameGui.openGameEnd(plugin, playerX, game);
+        }
+        if (playerO != null && playerO.isOnline()) {
+            GameGui.openGameEnd(plugin, playerO, game);
+        }
 
         SchedulerUtil.runLater(plugin, () -> {
             activeGames.remove(xUuid);
@@ -234,14 +232,14 @@ public class GameManager {
         Player playerX = Bukkit.getPlayer(game.getPlayerX());
         Player playerO = Bukkit.getPlayer(game.getPlayerO());
 
-        SchedulerUtil.runSync(plugin, () -> {
-            if (playerX != null && playerX.isOnline()) {
-                GameGui.openGame(plugin, playerX, game);
-            }
-            if (playerO != null && playerO.isOnline()) {
-                GameGui.openGame(plugin, playerO, game);
-            }
-        });
+        // Direkt aufrufen — handleMove wird bereits vom Main-Thread (Click-Event) aufgerufen.
+        // runSync() verzögert um 1 Tick → Close-Event feuert dazwischen → Flicker.
+        if (playerX != null && playerX.isOnline()) {
+            GameGui.openGame(plugin, playerX, game);
+        }
+        if (playerO != null && playerO.isOnline()) {
+            GameGui.openGame(plugin, playerO, game);
+        }
     }
 
     public void quitGame(UUID player) {

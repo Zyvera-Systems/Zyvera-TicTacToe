@@ -20,10 +20,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Zyvera-TicTacToe v1.2
+ * Autoren: Thomas U. & Zyvera-Systems
+ *
+ * Kompatibel mit: Bukkit, Spigot, Paper, Purpur, Folia
+ * Versionen: 1.13 - 1.21+
+ */
 public class ZyveraTicTacToe extends JavaPlugin {
 
     private GameManager gameManager;
@@ -66,8 +74,9 @@ public class ZyveraTicTacToe extends JavaPlugin {
 
         gameManager.startTasks();
 
-        // Hologramme nach kurzer Verzögerung spawnen (Welten müssen geladen sein)
-        SchedulerUtil.runLater(this, this::spawnAllHolograms, 40L);
+        // DecentHolograms: Hologramme nach kurzer Verzögerung spawnen
+        // (DH muss zuerst geladen sein, daher Delay)
+        SchedulerUtil.runLater(this, this::spawnAllHolograms, 60L);
 
         long elapsed = System.currentTimeMillis() - startTime;
         getLogger().info("=================================");
@@ -88,9 +97,6 @@ public class ZyveraTicTacToe extends JavaPlugin {
         }
 
         saveWorkbenches();
-
-        // Alle Hologramme entfernen
-        HologramUtil.removeAll();
 
         getLogger().info("Zyvera-TicTacToe deaktiviert.");
     }
@@ -168,17 +174,25 @@ public class ZyveraTicTacToe extends JavaPlugin {
         return boundWorkbenches.contains(locationToKey(loc));
     }
 
-    private void spawnHologram(Location loc) {
+    // --- Hologramme (DecentHolograms) ---
+
+    public void spawnHologram(Location loc) {
         if (loc.getWorld() == null) return;
 
         String line1 = getConfig().getString("hologram.line1", "&6&lTicTacToe");
         String line2 = getConfig().getString("hologram.line2", "&8[&aKlick Mich&8]");
         double offsetY = getConfig().getDouble("hologram.offset-y", 1.5);
 
-        HologramUtil.create(loc, new String[]{line1, line2}, offsetY);
+        boolean success = HologramUtil.create(loc, new String[]{line1, line2}, offsetY);
+        if (!success && HologramUtil.isAvailable()) {
+            getLogger().warning("Hologramm konnte nicht erstellt werden bei "
+                    + loc.getWorld().getName() + " " + loc.getBlockX() + "/" + loc.getBlockY() + "/" + loc.getBlockZ());
+        }
     }
 
     private void spawnAllHolograms() {
+        if (!HologramUtil.isAvailable()) return;
+
         int count = 0;
         for (String key : boundWorkbenches) {
             Location loc = keyToLocation(key);
@@ -188,9 +202,15 @@ public class ZyveraTicTacToe extends JavaPlugin {
             }
         }
         if (count > 0) {
-            getLogger().info(count + " Hologramme gespawnt.");
+            getLogger().info(count + " DecentHolograms-Hologramme erstellt.");
         }
     }
+
+    public Set<String> getBoundWorkbenchKeys() {
+        return Collections.unmodifiableSet(boundWorkbenches);
+    }
+
+    // --- Getter ---
 
     public GameManager getGameManager() { return gameManager; }
     public StatsManager getStatsManager() { return statsManager; }

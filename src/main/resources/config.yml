@@ -39,7 +39,7 @@ messages:
   stats-reset: "&aStats wurden zurückgesetzt."
 
 game:
-  turn-timeout: 120
+  turn-timeout: 300
   challenge-timeout: 60
   queue-check-interval: 40
   workbench-cooldown: 1000
@@ -55,7 +55,7 @@ gui:
   border-name: " "
 
 hologram:
-  line1: "&6&lTicTacToe"
+  line1: "&#EEF111&lT&#E6E415&li&#DFD718&lc&#D7CA1C&lT&#CFBD1F&la&#CAB31A&lc&#C6A915&lT&#C19E0F&lo&#BC940A&le"
   line2: "&8[&aKlick Mich&8]"
   offset-y: 1.5
 

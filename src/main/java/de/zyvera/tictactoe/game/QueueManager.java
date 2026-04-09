@@ -17,18 +17,34 @@ public class QueueManager {
     // Challenge Timestamps
     private final Map<UUID, Long> challengeTimestamps = new ConcurrentHashMap<>();
 
+    /**
+     * Fügt einen Spieler der Warteschlange hinzu.
+     * @return true wenn erfolgreich, false wenn bereits drin
+     */
     public boolean joinQueue(UUID player) {
         if (queue.contains(player)) return false;
         queue.add(player);
         return true;
     }
 
+    /**
+     * Entfernt einen Spieler aus der Warteschlange.
+     */
     public boolean leaveQueue(UUID player) {
         return queue.remove(player);
     }
+
+    /**
+     * Prüft ob ein Spieler in der Warteschlange ist.
+     */
     public boolean isInQueue(UUID player) {
         return queue.contains(player);
     }
+
+    /**
+     * Versucht ein Match aus der Warteschlange zu finden.
+     * @return UUID-Paar [playerX, playerO] oder null
+     */
     public UUID[] findMatch() {
         if (queue.size() < 2) return null;
 
@@ -45,7 +61,10 @@ public class QueueManager {
         return null;
     }
 
-
+    /**
+     * Sendet eine Herausforderung.
+     * @return true wenn erfolgreich
+     */
     public boolean sendChallenge(UUID challenger, UUID target) {
         // Nicht sich selbst herausfordern
         if (challenger.equals(target)) return false;
@@ -60,6 +79,10 @@ public class QueueManager {
         return true;
     }
 
+    /**
+     * Akzeptiert eine Herausforderung.
+     * @return UUID des Herausforderers oder null
+     */
     public UUID acceptChallenge(UUID target) {
         UUID challenger = incomingChallenges.remove(target);
         if (challenger != null) {
@@ -73,6 +96,9 @@ public class QueueManager {
         return null;
     }
 
+    /**
+     * Lehnt eine Herausforderung ab.
+     */
     public UUID denyChallenge(UUID target) {
         UUID challenger = incomingChallenges.remove(target);
         if (challenger != null) {
@@ -83,16 +109,32 @@ public class QueueManager {
         return null;
     }
 
+    /**
+     * Prüft ob ein Spieler eine offene Herausforderung hat.
+     */
     public boolean hasPendingChallenge(UUID player) {
         return pendingChallenges.containsKey(player);
     }
+
+    /**
+     * Prüft ob ein Spieler eine eingehende Herausforderung hat.
+     */
     public boolean hasIncomingChallenge(UUID player) {
         return incomingChallenges.containsKey(player);
     }
+
+    /**
+     * Gibt den Herausforderer einer eingehenden Challenge zurück.
+     */
     public UUID getChallenger(UUID target) {
         return incomingChallenges.get(target);
     }
 
+    /**
+     * Bereinigt abgelaufene Herausforderungen.
+     * @param timeoutMillis Timeout in Millisekunden
+     * @return Liste der abgelaufenen Challengers
+     */
     public List<UUID> cleanupExpiredChallenges(long timeoutMillis) {
         List<UUID> expired = new ArrayList<>();
         long now = System.currentTimeMillis();
@@ -114,6 +156,9 @@ public class QueueManager {
         return expired;
     }
 
+    /**
+     * Entfernt alle Daten eines Spielers (bei Disconnect etc.)
+     */
     public void removePlayer(UUID player) {
         queue.remove(player);
 

@@ -64,6 +64,9 @@ public class ItemBuilder {
         return this;
     }
 
+    /**
+     * Setzt den Besitzer eines Spielerkopfes (echtes Skin).
+     */
     public ItemBuilder skullOwner(OfflinePlayer player) {
         if (meta instanceof SkullMeta) {
             SkullMeta skull = (SkullMeta) meta;

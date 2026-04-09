@@ -7,12 +7,20 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.lang.reflect.Method;
 
+/**
+ * Scheduler-Abstraktion für Folia / Paper / Spigot / Bukkit Kompatibilität.
+ * Erkennt zur Laufzeit ob Folia vorhanden ist und nutzt den passenden Scheduler.
+ */
 public final class SchedulerUtil {
 
     private static boolean foliaDetected = false;
     private static boolean checked = false;
 
     private SchedulerUtil() {}
+
+    /**
+     * Prüft ob der Server Folia nutzt.
+     */
     public static boolean isFolia() {
         if (!checked) {
             checked = true;
@@ -26,6 +34,10 @@ public final class SchedulerUtil {
         return foliaDetected;
     }
 
+    /**
+     * Führt eine Aufgabe synchron auf dem Hauptthread aus.
+     * Bei Folia: Global Region Scheduler.
+     */
     public static void runSync(Plugin plugin, Runnable task) {
         if (isFolia()) {
             try {
@@ -41,6 +53,10 @@ public final class SchedulerUtil {
         }
     }
 
+    /**
+     * Führt eine Aufgabe verzögert aus.
+     * Bei Folia: Global Region Scheduler.
+     */
     public static void runLater(Plugin plugin, Runnable task, long delayTicks) {
         if (isFolia()) {
             try {
@@ -56,6 +72,10 @@ public final class SchedulerUtil {
         }
     }
 
+    /**
+     * Führt eine Aufgabe wiederholt aus.
+     * Gibt eine CancellableTask zurück.
+     */
     public static CancellableTask runTimer(Plugin plugin, Runnable task, long delayTicks, long periodTicks) {
         if (isFolia()) {
             try {

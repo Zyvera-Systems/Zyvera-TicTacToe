@@ -15,7 +15,19 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
+/**
+ * Kompaktes TicTacToe Spielfeld (36 Slots = 4 Reihen).
+ *
+ * Layout:
+ *   Row 0 (0-8):   [Head_X] [B] [B] [B] [Info] [B] [B] [B] [Head_O]
+ *   Row 1 (9-17):  [B] [B] [B] [0] [1] [2] [B] [B] [B]
+ *   Row 2 (18-26): [B] [B] [B] [3] [4] [5] [B] [B] [B]
+ *   Row 3 (27-35): [B] [B] [B] [6] [7] [8] [B] [B] [Quit]
+ *
+ * Board 3x3 zentriert: Slots 12,13,14 / 21,22,23 / 30,31,32
+ */
 public final class GameGui {
 
     public static final int[] BOARD_SLOTS = {
@@ -31,6 +43,10 @@ public final class GameGui {
             SLOT_TO_BOARD[BOARD_SLOTS[i]] = i;
         }
     }
+
+    // Spieler in diesem Set werden beim Schließen NICHT automatisch reopened.
+    // Verhindert Close→Reopen-Kette wenn das GUI programmatisch aktualisiert wird.
+    private static final Set<UUID> suppressClose = new HashSet<>();
 
     public static final String GAME_TITLE = "§8§l» §6§lTicTacToe §8§l«";
     public static final String END_TITLE_WIN = "§8§l» §a§lGewonnen! §8§l«";
@@ -123,6 +139,7 @@ public final class GameGui {
                 .lore("&7Klicke um aufzugeben.")
                 .build());
 
+        suppressClose.add(player.getUniqueId());
         player.openInventory(inv);
     }
 
@@ -213,7 +230,16 @@ public final class GameGui {
                         "&7Schließe das Inventar zum Beenden.")
                 .build());
 
+        suppressClose.add(player.getUniqueId());
         player.openInventory(inv);
+    }
+
+    /**
+     * Prüft und entfernt einen Spieler aus der Suppress-Liste.
+     * @return true wenn der Close-Event unterdrückt werden soll
+     */
+    public static boolean consumeSuppress(UUID uuid) {
+        return suppressClose.remove(uuid);
     }
 
     public static int slotToBoard(int slot) {

@@ -26,7 +26,9 @@ public class BlockInteractListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler(priority = EventPriority.HIGH)
+    // HIGHEST + ignoreCancelled=false: Feuert NACH Lobby-Plugins die canceln,
+    // sieht das Event trotzdem, und kann für gebundene Werkbänke handeln.
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();

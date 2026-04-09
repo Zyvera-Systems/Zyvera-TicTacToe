@@ -2,6 +2,9 @@ package de.zyvera.tictactoe.game;
 
 import java.util.UUID;
 
+/**
+ * Repräsentiert ein einzelnes TicTacToe-Spiel zwischen zwei Spielern.
+ */
 public class TicTacToeGame {
 
     public enum CellState {
@@ -24,6 +27,12 @@ public class TicTacToeGame {
     private long lastMoveTime;
     private final boolean ranked; // Ob Stats gezählt werden
 
+    /**
+     * Erstellt ein neues Spiel.
+     * @param playerX Spieler X (beginnt)
+     * @param playerO Spieler O
+     * @param ranked Ob Stats getrackt werden
+     */
     public TicTacToeGame(UUID playerX, UUID playerO, boolean ranked) {
         this.playerX = playerX;
         this.playerO = playerO;
@@ -41,6 +50,12 @@ public class TicTacToeGame {
         this.ranked = ranked;
     }
 
+    /**
+     * Setzt einen Zug auf das Feld.
+     * @param position 0-8 (Feld-Index)
+     * @param playerUuid UUID des Spielers der den Zug macht
+     * @return true wenn der Zug gültig war
+     */
     public boolean makeMove(int position, UUID playerUuid) {
         if (result != GameResult.IN_PROGRESS) return false;
         if (position < 0 || position > 8) return false;
@@ -68,6 +83,9 @@ public class TicTacToeGame {
         return true;
     }
 
+    /**
+     * Prüft ob das Spiel beendet ist und gibt das Ergebnis zurück.
+     */
     private GameResult checkResult() {
         // Alle Gewinn-Kombinationen
         int[][] winLines = {
@@ -98,6 +116,9 @@ public class TicTacToeGame {
         return hasEmpty ? GameResult.IN_PROGRESS : GameResult.DRAW;
     }
 
+    /**
+     * Gibt die Gewinn-Linie zurück (für Highlight in GUI), oder null.
+     */
     public int[] getWinLine() {
         int[][] winLines = {
                 {0, 1, 2}, {3, 4, 5}, {6, 7, 8},
@@ -117,6 +138,8 @@ public class TicTacToeGame {
         return null;
     }
 
+    // --- Getters ---
+
     public UUID getPlayerX() { return playerX; }
     public UUID getPlayerO() { return playerO; }
     public CellState[] getBoard() { return board; }
@@ -130,31 +153,60 @@ public class TicTacToeGame {
     public long getLastMoveTime() { return lastMoveTime; }
     public boolean isRanked() { return ranked; }
 
+    /**
+     * Gibt die UUID des aktuellen Spielers zurück.
+     */
     public UUID getCurrentPlayer() {
         return xTurn ? playerX : playerO;
     }
+
+    /**
+     * Gibt den Gegner eines Spielers zurück.
+     */
     public UUID getOpponent(UUID player) {
         return player.equals(playerX) ? playerO : playerX;
     }
+
+    /**
+     * Prüft ob ein Spieler an diesem Spiel beteiligt ist.
+     */
     public boolean isPlayer(UUID uuid) {
         return uuid.equals(playerX) || uuid.equals(playerO);
     }
+
+    /**
+     * Gibt das Symbol eines Spielers zurück.
+     */
     public CellState getSymbol(UUID player) {
         return player.equals(playerX) ? CellState.X : CellState.O;
     }
+
+    /**
+     * Beendet das Spiel vorzeitig (Spieler hat verlassen).
+     */
     public void forfeit(UUID quitter) {
         if (result != GameResult.IN_PROGRESS) return;
         result = quitter.equals(playerX) ? GameResult.WIN_O : GameResult.WIN_X;
     }
 
+    /**
+     * Bricht das Spiel ab (keine Stats).
+     */
     public void cancel() {
         if (result != GameResult.IN_PROGRESS) return;
         result = GameResult.CANCELLED;
     }
 
+    /**
+     * Gesamtanzahl der Züge.
+     */
     public int getTotalMoves() {
         return movesX + movesO;
     }
+
+    /**
+     * Züge eines bestimmten Spielers.
+     */
     public int getMovesFor(UUID player) {
         return player.equals(playerX) ? movesX : movesO;
     }

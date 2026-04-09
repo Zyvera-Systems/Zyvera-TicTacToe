@@ -8,6 +8,8 @@ authors:
   - "Zyvera-Systems"
 description: TicTacToe Minigame Plugin - Challenge players, queue up, and track your stats!
 website: https://zyvera.de
+softdepend:
+  - DecentHolograms
 
 commands:
   ttt:

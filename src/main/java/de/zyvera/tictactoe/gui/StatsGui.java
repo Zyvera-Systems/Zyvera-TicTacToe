@@ -109,18 +109,8 @@ public final class StatsGui {
 
         int[] topSlots = {19, 20, 21, 22, 23, 24, 25, 28, 29, 30};
         String[] medals = {"&6&l1.", "&7&l2.", "&c&l3.", "&f4.", "&f5.", "&f6.", "&f7.", "&f8.", "&f9.", "&f10."};
-        Material[] medalMats = {
-                ItemBuilder.safeMaterial("GOLD_INGOT"),
-                ItemBuilder.safeMaterial("IRON_INGOT"),
-                ItemBuilder.safeMaterial("BRICK"),
-                ItemBuilder.safeMaterial("PAPER"),
-                ItemBuilder.safeMaterial("PAPER"),
-                ItemBuilder.safeMaterial("PAPER"),
-                ItemBuilder.safeMaterial("PAPER"),
-                ItemBuilder.safeMaterial("PAPER"),
-                ItemBuilder.safeMaterial("PAPER"),
-                ItemBuilder.safeMaterial("PAPER")
-        };
+
+        Material headMat = ItemBuilder.safeMaterial("PLAYER_HEAD");
 
         for (int i = 0; i < topPlayers.size() && i < topSlots.length; i++) {
             PlayerStats stats = topPlayers.get(i);
@@ -131,9 +121,11 @@ public final class StatsGui {
             lore.add("&7Winrate: &6" + stats.getWinRate() + "%");
             lore.add("&7Beste Serie: &b" + stats.getBestWinStreak());
 
-            inv.setItem(topSlots[i], new ItemBuilder(medalMats[i])
+            org.bukkit.OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(stats.getUuid());
+            inv.setItem(topSlots[i], new ItemBuilder(headMat)
                     .name(medals[i] + " &6" + stats.getLastKnownName())
                     .lore(lore)
+                    .skullOwner(offlinePlayer)
                     .build());
         }
 
