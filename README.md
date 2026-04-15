@@ -1,4 +1,4 @@
-# Zyvera-TicTacToe v1.0
+# Zyvera-TicTacToe v1.2.1
 
 **TicTacToe Minigame Plugin für Minecraft Server**
 *Autoren: Thomas U. & Zyvera-Systems*
