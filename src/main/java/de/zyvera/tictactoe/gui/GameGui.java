@@ -44,9 +44,7 @@ public final class GameGui {
         }
     }
 
-    // Spieler in diesem Set werden beim Schließen NICHT automatisch reopened.
-    // Verhindert Close→Reopen-Kette wenn das GUI programmatisch aktualisiert wird.
-    private static final Set<UUID> suppressClose = new HashSet<>();
+    private static final Set<UUID> guiUpdating = new HashSet<>();
 
     public static final String GAME_TITLE = "§8§l» §6§lTicTacToe §8§l«";
     public static final String END_TITLE_WIN = "§8§l» §a§lGewonnen! §8§l«";
@@ -136,11 +134,12 @@ public final class GameGui {
         // Quit-Button
         inv.setItem(QUIT_SLOT, new ItemBuilder(ItemBuilder.safeMaterial("BARRIER"))
                 .name("&c&lSpiel verlassen")
-                .lore("&7Klicke um aufzugeben.")
+                .lore("&7Klicke oder drücke ESC.")
                 .build());
 
-        suppressClose.add(player.getUniqueId());
+        guiUpdating.add(player.getUniqueId());
         player.openInventory(inv);
+        guiUpdating.remove(player.getUniqueId());
     }
 
     public static void openGameEnd(ZyveraTicTacToe plugin, Player player, TicTacToeGame game) {
@@ -230,16 +229,16 @@ public final class GameGui {
                         "&7Schließe das Inventar zum Beenden.")
                 .build());
 
-        suppressClose.add(player.getUniqueId());
+        guiUpdating.add(player.getUniqueId());
         player.openInventory(inv);
+        guiUpdating.remove(player.getUniqueId());
     }
 
     /**
-     * Prüft und entfernt einen Spieler aus der Suppress-Liste.
-     * @return true wenn der Close-Event unterdrückt werden soll
+     * Prüft ob ein GUI-Update gerade läuft (programmatischer Close, kein ESC).
      */
-    public static boolean consumeSuppress(UUID uuid) {
-        return suppressClose.remove(uuid);
+    public static boolean isUpdating(UUID uuid) {
+        return guiUpdating.contains(uuid);
     }
 
     public static int slotToBoard(int slot) {

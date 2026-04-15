@@ -57,7 +57,7 @@ gui:
 hologram:
   line1: "&#EEF111&lT&#E6E415&li&#DFD718&lc&#D7CA1C&lT&#CFBD1F&la&#CAB31A&lc&#C6A915&lT&#C19E0F&lo&#BC940A&le"
   line2: "&8[&aKlick Mich&8]"
-  offset-y: 1.5
+  offset-y: 2.0
 
 storage:
   type: yaml

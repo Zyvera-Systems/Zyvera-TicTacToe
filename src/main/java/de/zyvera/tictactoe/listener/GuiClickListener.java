@@ -2,7 +2,6 @@ package de.zyvera.tictactoe.listener;
 
 import de.zyvera.tictactoe.ZyveraTicTacToe;
 import de.zyvera.tictactoe.data.PlayerStats;
-import de.zyvera.tictactoe.game.TicTacToeGame;
 import de.zyvera.tictactoe.gui.GameGui;
 import de.zyvera.tictactoe.gui.MainMenuGui;
 import de.zyvera.tictactoe.gui.StatsGui;
@@ -146,27 +145,23 @@ public class GuiClickListener implements Listener {
         Player player = (Player) event.getPlayer();
         String title = event.getView().getTitle();
 
+        // Spiel-GUI geschlossen
         if (title.equals(GameGui.GAME_TITLE)) {
-            // Wenn das GUI programmatisch aktualisiert wurde → nicht erneut öffnen
-            if (GameGui.consumeSuppress(player.getUniqueId())) {
+            // Programmatisches Update (openGame wurde aufgerufen) → ignorieren
+            if (GameGui.isUpdating(player.getUniqueId())) {
                 return;
             }
 
-            // Spieler hat ESC gedrückt → GUI wieder öffnen
-            TicTacToeGame game = plugin.getGameManager().getGame(player.getUniqueId());
-            if (game != null && game.getResult() == TicTacToeGame.GameResult.IN_PROGRESS) {
+            // Spieler hat ESC gedrückt → Spiel verlassen
+            // Um 1 Tick verzögert, da man kein Inventar öffnen kann
+            // während ein Close-Event verarbeitet wird.
+            if (plugin.getGameManager().isInGame(player.getUniqueId())) {
                 de.zyvera.tictactoe.util.SchedulerUtil.runLater(plugin, () -> {
                     if (player.isOnline() && plugin.getGameManager().isInGame(player.getUniqueId())) {
-                        GameGui.openGame(plugin, player, game);
+                        plugin.getGameManager().quitGame(player.getUniqueId());
                     }
                 }, 1L);
             }
-        }
-
-        // End-Screen: suppress wenn programmatisch geöffnet
-        if (title.equals(GameGui.END_TITLE_WIN) || title.equals(GameGui.END_TITLE_LOSE)
-                || title.equals(GameGui.END_TITLE_DRAW) || title.equals(GameGui.END_TITLE_CANCEL)) {
-            GameGui.consumeSuppress(player.getUniqueId());
         }
     }
 }
